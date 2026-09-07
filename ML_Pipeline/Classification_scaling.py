@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.metrics import accuracy_score, r2_score, mean_squared_error, classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from imblearn.over_sampling import SMOTE
 
 def Cls_model(input_val, target_col):
@@ -20,9 +20,13 @@ def Cls_model(input_val, target_col):
     for col in X_train.columns:
         X_train[col] = X_train[col].fillna(X_train[col].mean())
         X_test[col] = X_test[col].fillna(X_train[col].mean())
-    Y_train = Y_train.fillna(Y_train.mean())
-    Y_test = Y_test.fillna(Y_train.mean())
+    Y_train = Y_train.fillna(Y_train.mode()[0])
+    Y_test = Y_test.fillna(Y_train.mode()[0])
     #Oversampling
+
+    le = LabelEncoder()
+    Y_train = le.fit_transform(Y_train)
+    Y_test = le.transform(Y_test)
     
     populate = ""
     while populate not in [ "y","n" ]:
